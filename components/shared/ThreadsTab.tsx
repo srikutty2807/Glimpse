@@ -2,6 +2,7 @@ import { fetchUserPosts } from "@/lib/actions/user.actions";
 import React from "react";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { redirect } from "next/navigation";
+import { fetchCommunityPosts } from "@/lib/actions/community.actions";
 
 interface ThreadsProps {
   currentUserId: string;
@@ -13,8 +14,13 @@ async function ThreadsTab({
   accountId,
   accountType,
 }: ThreadsProps) {
-  let result = await fetchUserPosts(accountId);
+  let result: any;
   //console.log(result);
+  if (accountType === "Community") {
+    result = await fetchCommunityPosts(accountId);
+  } else {
+    result = await fetchUserPosts(accountId);
+  }
   if (!result) redirect("/");
   return (
     <section className="mt-9 flex flex-col gap-10">
@@ -39,7 +45,7 @@ async function ThreadsTab({
             createdAt={thread.createdAt}
             comments={thread.children}
           />
-        )
+        );
       })}
     </section>
   );
